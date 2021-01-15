@@ -68,47 +68,43 @@ export default {
   },
 
   created() {
-    this.init(true)
+    this.init()
   },
 
   methods: {
-    async init(withCategories = false) {
+    async init() {
       await this.fetchCurrentCategory(this.$route.query.category || '')
       this.fetchPosts()
-      if (withCategories) this.fetchCategories()
+      this.fetchCategories()
     },
     fetchCategories() {
-      this.$axios
-        .get('/api/category')
-        .then(({ data }) => {
-          this.categories = data.data;
-        })
+      !this.$store.state.category.categories.length
+        ? this.$store.dispatch('category/fetch').then(data => this.categories = data)
+        : this.categories = this.$store.state.category.categories
     },
     async fetchCurrentCategory(slug) {
       if (!slug) {
         this.category = null
         return
       }
-      await this.$axios
-        .get(`/api/category/${slug}`)
+      await this.$api
+        .$get(`/category/${slug}`)
         .then(({ data }) => {
-          this.category = data.data;
+          this.category = data;
         })
         .catch(err => {
           this.$router.push('/')
-          this.$notify.error({
-            message: err.response.data.message || err.message
-          })
         })
     },
     fetchPosts() {
-      this.$axios
-        .get(`/api/post?page=${this.page}&per_page=40&&category=${this.category ? this.category.slug : ''}`)
-        .then(({ data }) => {
-          this.questions = data.data;
-          this.maxPage = data.meta.last_page;
+      this.$api
+        .$get(`/post?page=${this.page}&per_page=40&&category=${this.category ? this.category.slug : ''}`)
+        .then(({ data, meta }) => {
+          this.questions = data;
+          this.maxPage = meta.last_page;
         })
         .catch((err) => {
+          console.log(err)
           this.$notify.error({
             message: err.response.data.message || err.message
           })

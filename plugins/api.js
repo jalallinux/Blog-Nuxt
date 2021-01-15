@@ -1,5 +1,15 @@
-export default ({$axios, $notify, redirect, store}) => {
-  $axios.onError(error => {
+export default ({ $axios, $notify, redirect, store }, inject) => {
+
+  const api = $axios.create({
+    baseURL: process.env.API_BASE_URL,
+    headers: {
+      common: {
+        Accept: 'text/plain, */*'
+      }
+    }
+  })
+
+  api.onError(error => {
 
     switch (error.response.status) {
       case 422: // for Validation errors
@@ -30,7 +40,11 @@ export default ({$axios, $notify, redirect, store}) => {
     return Promise.reject(error)
   })
 
-  $axios.onRequest(() => {
+  api.onRequest((config) => {
+    console.log(`- - - Request to: /api${config.url}`)
     store.dispatch('validation/clearErrors')
   })
+
+  // Inject to context as $api
+  inject('api', api)
 }

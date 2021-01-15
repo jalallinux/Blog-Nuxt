@@ -28,7 +28,7 @@ export default {
   plugins: [
     '~/plugins/mixins/validation',
     { src: '~plugins/nuxt-simplemde-plugin.js', mode: 'client' },
-    '~/plugins/axios',
+    '~/plugins/api',
     // '~/plugins/mixins/user',
   ],
 
@@ -39,6 +39,7 @@ export default {
   buildModules: [
     // https://go.nuxtjs.dev/vuetify
     "@nuxtjs/vuetify",
+    "@nuxtjs/dotenv",
   ],
 
   // Modules (https://go.nuxtjs.dev/config-modules)
@@ -71,7 +72,7 @@ export default {
     strategies: {
       laravelJWT: {
         provider: 'laravel/jwt',
-        url: 'https://blog.x4d.ir/api',
+        url: process.env.API_BASE_URL,
         endpoints: {
           login: { url: '/auth/login', method: 'post' },
           refresh: { url: '/auth/refresh', method: 'post' },
@@ -100,7 +101,7 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: 'https://blog.x4d.ir/',
+    baseURL: process.env.APP_BASE_URL,
   },
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)

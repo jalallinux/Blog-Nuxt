@@ -2,6 +2,7 @@
   <v-card
     class="mx-auto"
     max-width="344"
+    :to="{ path: `/post/${post.slug}` }"
   >
     <v-img
       :src="post.cover"
@@ -10,7 +11,7 @@
 
     <v-card-title v-text="post.title" />
 
-    <v-card-subtitle v-text="post.category" />
+    <v-card-subtitle v-text="post.caption" />
 
     <v-card-actions>
       <v-btn
@@ -19,24 +20,7 @@
       >
         ادامه مطلب
       </v-btn>
-
-      <v-spacer></v-spacer>
-
-      <v-btn
-        icon
-        @click="show = !show"
-      >
-        <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-      </v-btn>
     </v-card-actions>
-
-    <v-expand-transition>
-      <div v-show="show">
-        <v-divider></v-divider>
-
-        <v-card-text v-text="post.caption" />
-      </div>
-    </v-expand-transition>
   </v-card>
 </template>
 
@@ -49,7 +33,7 @@ export default {
       show: false
     }
   },
-  
+
   props: {
     post: {
       type: Object,
