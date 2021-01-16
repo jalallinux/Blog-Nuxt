@@ -3,28 +3,7 @@
     <v-container fluid grid-list-md>
       <v-layout row wrap>
         <PostList :title="categoryTitle" :posts="questions" />
-        <v-flex md2>
-          <v-subheader>دسته بندی ها</v-subheader>
-          <v-card class="mb-3">
-            <v-list>
-              <v-list-item
-                v-for="(category, i) in categories"
-                :key="i"
-                :to="{ path: `?category=${category.slug}` }"
-                color="red"
-                router
-                exact
-              >
-                <v-list-item-action>
-                  <v-icon>{{ `mdi-alpha-${category.name.toLowerCase().charAt(0)}` }}</v-icon>
-                </v-list-item-action>
-                <v-list-item-content>
-                  <v-list-item-title v-text="ucfirst(category.name)" />
-                </v-list-item-content>
-              </v-list-item>
-            </v-list>
-          </v-card>
-        </v-flex>
+        <CategoryList />
       </v-layout>
       <v-row justify="center">
         <v-col cols="8">
@@ -39,10 +18,12 @@
 
 <script>
 import PostList from "~/components/post/PostList";
+import CategoryList from "@/components/category/CategoryList";
 
 export default {
   name: 'index',
   components: {
+    CategoryList,
     PostList
   },
   auth: false,
@@ -60,7 +41,6 @@ export default {
   data() {
     return {
       category: null,
-      categories: [],
       questions: [],
       page: 1,
       maxPage: 1,
@@ -75,13 +55,8 @@ export default {
     async init() {
       await this.fetchCurrentCategory(this.$route.query.category || '')
       this.fetchPosts()
-      this.fetchCategories()
     },
-    fetchCategories() {
-      !this.$store.state.category.categories.length
-        ? this.$store.dispatch('category/fetch').then(data => this.categories = data)
-        : this.categories = this.$store.state.category.categories
-    },
+
     async fetchCurrentCategory(slug) {
       if (!slug) {
         this.category = null
@@ -110,9 +85,6 @@ export default {
           })
         });
     },
-    ucfirst(str) {
-      return str.charAt(0).toUpperCase() + str.slice(1)
-    }
   },
 
   computed: {
@@ -131,3 +103,6 @@ export default {
   },
 }
 </script>
+
+<style scoped>
+</style>

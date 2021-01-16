@@ -4,12 +4,13 @@ export default ({ $axios, $notify, redirect, store }, inject) => {
     baseURL: process.env.API_BASE_URL,
     headers: {
       common: {
-        Accept: 'text/plain, */*'
+        Accept: 'application/json',
       }
     }
   })
 
   api.onError(error => {
+
 
     switch (error.response.status) {
       case 422: // for Validation errors

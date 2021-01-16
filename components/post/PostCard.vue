@@ -12,15 +12,6 @@
     <v-card-title v-text="post.title" />
 
     <v-card-subtitle v-text="post.caption" />
-
-    <v-card-actions>
-      <v-btn
-        color="orange lighten-2"
-        text
-      >
-        ادامه مطلب
-      </v-btn>
-    </v-card-actions>
   </v-card>
 </template>
 

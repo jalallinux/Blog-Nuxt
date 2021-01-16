@@ -1,7 +1,7 @@
 <template>
   <v-flex md10>
     <v-subheader v-text="title" />
-    <v-container>
+    <v-container fluid>
       <v-row dense>
         <v-col
           v-for="post in posts"

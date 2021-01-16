@@ -10,10 +10,9 @@ export const mutations = {
 
 export const actions = {
   fetch(context) {
-    return this.$api.$get('/category').then(({ data }) => {
-      context.commit('set', data)
+    return this.$api.$get('/category').then((data) => {
+      context.commit('set', data.data)
       return data
     })
   }
 }
-
