@@ -1,12 +1,12 @@
 <template>
   <v-flex md2>
-    <v-subheader>دسته بندی ها</v-subheader>
+    <v-subheader v-text="title" />
     <v-card class="mb-3">
       <v-list>
         <v-list-item
           v-for="(category, i) in categories"
           :key="i"
-          :to="{ path: `?category=${category.slug}` }"
+          :to="{ query: { category: category.slug } }"
           color="red"
           router
           exact
@@ -26,22 +26,27 @@
 <script>
 export default {
   name: "CategoryList",
+
   data() {
     return {
       categories: [],
     }
   },
 
+
+  props: {
+    title: {
+      type: String,
+      default: 'دسته بندی ها'
+    },
+  },
+
   created() {
-    this.init()
+    this.fetchCategories()
   },
 
   methods: {
-    init() {
-      this.fetchCategories()
-    },
     fetchCategories() {
-      console.log(this.$store.getters.categories)
       !this.$store.state.category.categories.length
         ? this.$store.dispatch('category/fetch').then(({ data }) => this.categories = data)
         : this.categories = this.$store.state.category.categories
@@ -50,13 +55,11 @@ export default {
       return str.charAt(0).toUpperCase() + str.slice(1)
     }
   },
-
-  computed: {
-    categoryTitle() {
-      return this.category ? `سوالات دسته ${this.category.name}` : `آخرین سوالات`
+  watch: {
+    categories(newValue, oldValue) {
+      if (newValue.length) this.$emit('fetched')
     }
   },
-
 }
 </script>
 

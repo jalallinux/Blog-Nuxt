@@ -5,7 +5,7 @@ export const state = () => ({
 export const mutations = {
   set(state, data) {
     state.categories = data
-  }
+  },
 }
 
 export const actions = {
@@ -16,3 +16,4 @@ export const actions = {
     })
   }
 }
+

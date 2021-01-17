@@ -2,13 +2,13 @@
   <v-row justify="center" align="center">
     <v-container fluid grid-list-md>
       <v-layout row wrap>
-        <PostList :title="categoryTitle" :posts="questions" />
-        <CategoryList />
+        <PostList :title="categoryTitle" :posts="posts"/>
+        <CategoryList @fetched="init" />
       </v-layout>
       <v-row justify="center">
         <v-col cols="8">
           <v-container class="max-width">
-            <v-pagination circle v-model="page" :length="maxPage"></v-pagination>
+            <v-pagination circle v-model="page" :length="maxPage"/>
           </v-container>
         </v-col>
       </v-row>
@@ -41,65 +41,58 @@ export default {
   data() {
     return {
       category: null,
-      questions: [],
+      posts: [],
       page: 1,
       maxPage: 1,
     }
   },
 
-  created() {
-    this.init()
-  },
-
   methods: {
-    async init() {
-      await this.fetchCurrentCategory(this.$route.query.category || '')
-      this.fetchPosts()
+    init() {
+      this.setCurrentCategory()
+      this.$store.state.post.posts.length ? this.setPosts() : this.fetchPosts()
     },
-
-    async fetchCurrentCategory(slug) {
-      if (!slug) {
-        this.category = null
-        return
-      }
-      await this.$api
-        .$get(`/category/${slug}`)
-        .then(({ data }) => {
-          this.category = data;
-        })
-        .catch(err => {
-          this.$router.push('/')
-        })
+    setCurrentCategory() {
+      const slug = this.$route.query.category || ''
+      this.category = this.$store.state.category.categories
+        .find(category => category.slug === slug) || null
     },
     fetchPosts() {
-      this.$api
-        .$get(`/post?page=${this.page}&per_page=40&&category=${this.category ? this.category.slug : ''}`)
-        .then(({ data, meta }) => {
-          this.questions = data;
-          this.maxPage = meta.last_page;
+      // fetch posts from API
+      this.$store.dispatch('post/fetch', { page: this.page, category: this.category })
+        .then(({data, meta}) => {
+          this.posts = data
+          this.maxPage = meta.last_page
         })
-        .catch((err) => {
-          console.log(err)
-          this.$notify.error({
-            message: err.response.data.message || err.message
-          })
-        });
     },
+    setPosts() {
+      // set posts from post store
+      this.posts = this.$store.state.post.posts
+      this.category = this.$store.state.post.category
+      this.maxPage = this.$store.state.post.meta.last_page
+      this.page = this.$store.state.post.meta.current_page
+    }
   },
 
   computed: {
     categoryTitle() {
       return this.category ? `سوالات دسته ${this.category.name}` : `آخرین سوالات`
-    }
+    },
   },
 
   watch: {
-    page(newValue, oldValue) {
-      this.fetchPosts();
+    page(toPage, fromPage) {
+      // fetch only when set new page
+      if (this.page !== this.$store.state.post.current_page) this.fetchPosts();
     },
-    $route(to, from) {
-      this.init()
-    }
+    $route(toUrl, fromUrl) {
+      // fetch only when category changed
+      if (toUrl.path === fromUrl.path) {
+        this.page = 1
+        this.setCurrentCategory()
+        this.fetchPosts()
+      }
+    },
   },
 }
 </script>
