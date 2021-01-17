@@ -15,10 +15,6 @@ export default {
       type: String,
       default: ''
     },
-    theme: {
-      type: String,
-      default: 'railscasts'
-    },
   },
 
   computed: {
