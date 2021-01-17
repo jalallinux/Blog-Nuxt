@@ -1,6 +1,6 @@
 export const state = () => ({
   posts: [],
-  meta:  {},
+  meta: {},
   category: null
 })
 
@@ -13,12 +13,18 @@ export const mutations = {
 }
 
 export const actions = {
-  fetch(context, payload) {
-    return this.$api.$get(`/post?page=${payload.page}&category=${payload.category ? payload.category.slug : ''}`).then((data) => {
-      context.commit('set', {
-        ...data, category: payload.category
+  index(context, payload) {
+    return this.$api.$get(`/post?page=${payload.page}&category=${payload.category ? payload.category.slug : ''}`)
+      .then(data => {
+        context.commit('set', {
+          ...data, category: payload.category
+        })
+        return data
       })
-      return data
-    })
-  }
+  },
+  async show(context, slug) {
+    return context.state.posts.find(post => post.slug === slug)
+      || (await this.$api.get(`/post/${slug}`)).data.data
+  },
 }
+

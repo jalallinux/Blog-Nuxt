@@ -14,6 +14,10 @@ export const actions = {
       context.commit('set', data.data)
       return data
     })
-  }
+  },
+  async show(context, slug) {
+    return context.state.categories.find(category => category.slug === slug)
+      || (await this.$api.get(`/category/${slug}`)).data.data
+  },
 }
 

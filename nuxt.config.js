@@ -54,7 +54,7 @@ export default {
     'nuxt-izitoast',
     // https://www.npmjs.com/package/nuxt-highlightjs
     ['nuxt-highlightjs', {
-      style: 'atom-one-dark'
+      style: 'atom-one-dark-reasonable'
     }]
   ],
 

@@ -2,7 +2,29 @@
   <v-row justify="center" align="center">
     <v-container fluid grid-list-md>
       <v-layout row wrap>
-        <PostList :title="categoryTitle" :posts="posts"/>
+        <v-container v-if="!posts.length" style="height: 300px;">
+          <v-row
+            class="fill-height"
+            align-content="center"
+            justify="center"
+          >
+            <v-col
+              class="subtitle-1 text-center"
+              cols="12"
+            >
+              در حال دریافت اطلاعات
+            </v-col>
+            <v-col cols="6">
+              <v-progress-linear
+                color="primary"
+                indeterminate
+                rounded
+                height="6"
+              ></v-progress-linear>
+            </v-col>
+          </v-row>
+        </v-container>
+        <PostList v-else :title="categoryTitle" :posts="posts"/>
         <CategoryList @fetched="init" />
       </v-layout>
       <v-row justify="center">
@@ -59,7 +81,8 @@ export default {
     },
     fetchPosts() {
       // fetch posts from API
-      this.$store.dispatch('post/fetch', { page: this.page, category: this.category })
+      this.posts = []
+      this.$store.dispatch('post/index', { page: this.page, category: this.category })
         .then(({data, meta}) => {
           this.posts = data
           this.maxPage = meta.last_page
