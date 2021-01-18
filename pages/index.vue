@@ -87,9 +87,10 @@ export default {
     getPosts() {
       this.$store.dispatch('post/index', { page: this.page, category: this.category })
         .then(({ posts, meta }) => {
+          console.log(meta)
           this.posts = posts
           this.maxPage = meta.last_page
-          this.page = meta.page
+          this.page = meta.current_page
         })
     }
   },
