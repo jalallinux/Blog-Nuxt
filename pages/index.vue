@@ -25,7 +25,7 @@
           </v-row>
         </v-container>
         <PostList v-else :title="categoryTitle" :posts="posts"/>
-        <CategoryList @fetched="init" />
+        <CategoryList />
       </v-layout>
       <v-row justify="center">
         <v-col cols="8">
@@ -49,6 +49,7 @@ export default {
     PostList
   },
   auth: false,
+  fetchOnServer: false,
   head: {
     title: 'Home',
     meta: [
@@ -69,31 +70,27 @@ export default {
     }
   },
 
+  async fetch() {
+    this.init()
+  },
+
   methods: {
     init() {
       this.setCurrentCategory()
-      this.$store.state.post.posts.length ? this.setPosts() : this.fetchPosts()
+      this.getPosts()
     },
     setCurrentCategory() {
       const slug = this.$route.query.category || ''
       this.category = this.$store.state.category.categories
         .find(category => category.slug === slug) || null
     },
-    fetchPosts() {
-      // fetch posts from API
-      this.posts = []
+    getPosts() {
       this.$store.dispatch('post/index', { page: this.page, category: this.category })
-        .then(({data, meta}) => {
-          this.posts = data
+        .then(({ posts, meta }) => {
+          this.posts = posts
           this.maxPage = meta.last_page
+          this.page = meta.page
         })
-    },
-    setPosts() {
-      // set posts from post store
-      this.posts = this.$store.state.post.posts
-      this.category = this.$store.state.post.category
-      this.maxPage = this.$store.state.post.meta.last_page
-      this.page = this.$store.state.post.meta.current_page
     }
   },
 
@@ -105,16 +102,11 @@ export default {
 
   watch: {
     page(toPage, fromPage) {
-      // fetch only when set new page
-      if (this.page !== this.$store.state.post.current_page) this.fetchPosts();
+      this.getPosts()
     },
     $route(toUrl, fromUrl) {
       // fetch only when category changed
-      if (toUrl.path === fromUrl.path) {
-        this.page = 1
-        this.setCurrentCategory()
-        this.fetchPosts()
-      }
+      if (toUrl.path === fromUrl.path) this.init()
     },
   },
 }

@@ -26,7 +26,6 @@
       <v-btn
         icon
         color="black"
-        :to="{ path: '/ask' }"
       >
         <v-icon>mdi-head-question-outline</v-icon>
       </v-btn>

@@ -13,18 +13,26 @@ export const mutations = {
 }
 
 export const actions = {
-  index(context, payload) {
-    return this.$api.$get(`/post?page=${payload.page}&category=${payload.category ? payload.category.slug : ''}`)
-      .then(data => {
+  async index(context, { category, page }) {
+    try {
+      if (JSON.stringify(context.state.category) !== JSON.stringify(category)
+        || context.state.meta.current_page !== page) {
+        const data = (await this.$axios.$get(`/post?page=${page}&category=${category ? category.slug : ''}`))
         context.commit('set', {
-          ...data, category: payload.category
+          ...data, category
         })
-        return data
-      })
+      }
+      return {
+        posts: context.state.posts,
+        meta: context.state.meta
+      }
+    } catch (e) {
+      return e
+    }
   },
   async show(context, slug) {
     return context.state.posts.find(post => post.slug === slug)
-      || (await this.$api.get(`/post/${slug}`)).data.data
+      || (await this.$axios.get(`/post/${slug}`)).data.data
   },
 }
 

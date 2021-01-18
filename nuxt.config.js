@@ -28,8 +28,7 @@ export default {
   plugins: [
     '~/plugins/mixins/validation',
     { src: '~plugins/nuxt-simplemde-plugin.js', mode: 'client' },
-    '~/plugins/api',
-    // '~/plugins/mixins/user',
+    '~/plugins/axios',
   ],
 
   // Auto import components (https://go.nuxtjs.dev/config-components)
@@ -101,7 +100,7 @@ export default {
 
   // Axios module configuration (https://go.nuxtjs.dev/config-axios)
   axios: {
-    baseURL: process.env.APP_BASE_URL,
+    baseURL: process.env.API_BASE_URL,
   },
 
   // Vuetify module configuration (https://go.nuxtjs.dev/config-vuetify)

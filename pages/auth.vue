@@ -154,7 +154,7 @@ export default {
     },
     register() {
       this.doLogin = false;
-      this.$axios.post('/api/auth/register', {
+      this.$axios.$post('/auth/register', {
         name: this.registerForm.name,
         email: this.registerForm.email,
         password: this.registerForm.password,

@@ -6,7 +6,6 @@
         <v-col
           v-for="post in posts"
           :key="post.id"
-          cols="3"
         >
           <PostCard
             :post="post"
