@@ -50,7 +50,7 @@ export default {
 
   methods: {
     fetchSamePosts() {
-      this.$store.dispatch('post/index', { page: 1, category: this.category })
+      this.$store.dispatch('post/index', { page: 1, category: this.post.category })
         .then(({ posts, meta }) => {
           this.samePosts = posts.filter(post => post.slug !== this.post.slug)
         })
