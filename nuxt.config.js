@@ -1,6 +1,7 @@
 import colors from 'vuetify/es5/util/colors'
 
 export default {
+
   // Target (https://go.nuxtjs.dev/config-target)
   target: 'server', // * for fix error server side render not matching with client side render
 
